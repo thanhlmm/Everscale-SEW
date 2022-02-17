@@ -17,8 +17,8 @@ Alice -> Alice: <generate> **notice**
 activate Alice
 Alice -> Alice: <make> **chose (S|E|W)**
 Alice -> SEW: <bid> **sha256** of **chose+notice** (mint NFT)
-SEW -> NFT: <mint> create NFT
 activate SEW #LightSalmon
+SEW -> NFT: <mint> **create NFT**
 Alice -> Alice: <encrypt> **notice**
 Alice <-> Repository: <send> **encrypted notice**
 activate Repository #LightSalmon
