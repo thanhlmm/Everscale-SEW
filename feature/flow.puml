@@ -1,0 +1,50 @@
+@startuml
+skinparam shadowing false
+skinparam backgroundColor #LightGrey
+skinparam handwritten false
+
+participant Alice
+
+box "Everscale" #LightBlue
+participant Repository
+participant SEW
+participant NFT
+end box
+
+participant Bob
+
+Alice -> Alice: <generate> **notice**
+activate Alice
+Alice -> Alice: <make> **chose (S|E|W)**
+Alice -> SEW: <bid> **sha256** of **chose+notice** (mint NFT)
+SEW -> NFT: <mint> create NFT
+activate SEW #LightSalmon
+Alice -> Alice: <encrypt> **notice**
+Alice <-> Repository: <send> **encrypted notice**
+activate Repository #LightSalmon
+Bob <-> NFT: <list> **list NFT**
+activate Bob
+Bob <-> SEW: <bid> **chose (S|E|W)**
+Alice <-> SEW: <get> **status game**
+
+Alice <-> Repository: <get> **encrypted notice**
+Alice -> Alice: <decipher> **notice**
+Alice -> SEW: <send> **chose+notice** (end game)
+
+alt Alice win case
+    SEW -> Alice: <transfer> **reward**
+    SEW -> NFT: <transfer> **Make Alice of NFT**
+else Bob win case
+    SEW -> Bob: <transfer> **reward**
+    SEW -> NFT: <transfer> **Make Bob of NFT**
+    deactivate Bob
+else Standoff case
+    SEW -> SEW: <increment bank> **jackpot**
+    SEW -> NFT: <burn> **Delete NFT**
+end
+
+deactivate SEW
+Alice <-> Repository: <delete> **encrypted notice**
+deactivate Alice
+deactivate Repository
+@enduml
