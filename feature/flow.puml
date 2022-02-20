@@ -6,7 +6,7 @@ skinparam handwritten false
 participant Alice
 
 box "Everscale" #LightBlue
-participant Repository
+participant Vault
 participant Game
 participant NFT
 end box
@@ -21,35 +21,33 @@ activate Game #LightSalmon
 Game -> NFT: <mint> **create NFT**
 activate NFT #LightSalmon
 NFT -> NFT: <mint> **created NFT for Game**
-NFT -> Game: <???>
+NFT -> Game: <status>
 deactivate NFT
 Alice -> Alice: <encrypt> **notice**
-Alice <-> Repository: <send> **encrypted notice**
-activate Repository #LightSalmon
+Alice <-> Vault: <send> **encrypted notice**
+activate Vault #LightSalmon
 Bob <-> NFT: <list> **list NFT**
 activate Bob
 Bob <-> Game: <beat> **chose (S|E|W)**
 Alice <-> Game: <get> **status game**
 
-Alice <-> Repository: <get> **encrypted notice**
+Alice <-> Vault: <get> **encrypted notice**
 Alice -> Alice: <decipher> **notice**
 Alice -> Game: <send> **chose+notice** (end game)
-
-alt Alice win case
-    Game -> Alice: <transfer> **reward=bank-rake**
-    Game -> NFT: <transfer> **Make Alice of NFT**
-else Bob win case
-    Game -> Bob: <transfer> **reward=bank-rake**
-    Game -> NFT: <transfer> **Make Bob of NFT**
-    deactivate Bob
-else Standoff case
+Alice <-> Vault: <delete> **encrypted notice**
+deactivate Vault
+alt Standoff case
     Game -> Alice: <transfer> **reward=(bank-rake)/2**
     Game -> Bob: <transfer> **reward=(bank-rake)/2**
     Game -> NFT: <burn> **Delete NFT**
+else Alice win case
+    Game -> Alice: <transfer> **reward=bank-rake**
+    deactivate Alice
+    Game -> NFT: <transfer> **Make Alice owner of NFT**
+else Bob win case
+    Game -> Bob: <transfer> **reward=bank-rake**
+    deactivate Bob
+    Game -> NFT: <transfer> **Make Bob owner of NFT**
+    deactivate Game
 end
-
-deactivate Game
-Alice <-> Repository: <delete> **encrypted notice**
-deactivate Alice
-deactivate Repository
 @enduml
