@@ -6,7 +6,7 @@ async function gameDeploy(locklift) {
     constructorParams: {},
     initParams: {},
     keyPair,
-  }, locklift.utils.convertCrystal('10.044484001', 'nano'))
+  }, locklift.utils.convertCrystal('10.053156003', 'nano'))
 }
 
 module.exports = gameDeploy;

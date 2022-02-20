@@ -30,9 +30,8 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@broxus/contracts@EverscaleGuild/broxus-contracts", "@broxus/contracts@EverscaleGuild/broxus-contracts#1de8d42665247359dd226cc9b6746ee0904a15d1", "@broxus/contracts@^1.0.3":
+"@broxus/contracts@EverscaleGuild/broxus-contracts", "@broxus/contracts@^1.0.3":
   version "1.0.4"
-  uid "1de8d42665247359dd226cc9b6746ee0904a15d1"
   resolved "https://codeload.github.com/EverscaleGuild/broxus-contracts/tar.gz/1de8d42665247359dd226cc9b6746ee0904a15d1"
   dependencies:
     chai "^4.3.4"

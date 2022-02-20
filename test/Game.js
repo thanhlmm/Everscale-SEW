@@ -2,8 +2,10 @@ const {expect} = require('chai')
 const gameDeploy = require('../deploy/gameDeploy')
 const walletTestDeploy = require('../deploy/walletTestDeploy')
 
+const toNano = (amount) => locklift.utils.convertCrystal(amount, 'nano')
+const toEver = (amount) => locklift.utils.convertCrystal(amount, 'ton')
 const balance = async (contract) => {
-  return locklift.utils.convertCrystal((await locklift.ton.getBalance(contract.address)), 'ton').toNumber().toFixed(4);
+  return toEver((await locklift.ton.getBalance(contract.address))).toNumber()
 }
 
 describe('Game', async function () {
@@ -11,6 +13,13 @@ describe('Game', async function () {
   let alice
   let bob
   let game
+  const balances = async () => {
+    return {
+      game: await balance(game),
+      alice: await balance(alice),
+      bob: await balance(bob),
+    }
+  }
   it('Game::artifact', async function () {
     expect(contract.code).not.to.equal(undefined, 'Code should be available')
     expect(contract.abi).not.to.equal(undefined, 'ABI should be available')
@@ -69,9 +78,7 @@ describe('Game', async function () {
 
   it('Game::gamePlay bob win', async function () {
     this.timeout(10000)
-    console.log('game=', await balance(game))
-    console.log('alice=', await balance(alice))
-    console.log('bob=', await balance(bob))
+    console.log(await balances())
     // Alice -> Alice: <make> **chose (S|E|W)**
     const bet = await game.call({
       method: 'createBet', params: {chose: "S"}
@@ -83,27 +90,30 @@ describe('Game', async function () {
       method: 'bet',
       params: {
         betHash: `0x${bet.hash.toString(16)}`,
+        amount: toNano(5),
       },
-      value: locklift.utils.convertCrystal(10, 'nano'),
+      value: toNano(6),
       keyPair,
     })
+    console.log(await balances())
     // Bob <-> NFT: <list> **list NFT**
-    const listBet = await game.call({method: 'listBet'})
+    let listBet = await game.call({method: 'listBet'})
+    expect(Object.keys(listBet).length).to.be.equal(1)
     const betId = Object.keys(listBet)[0]
     console.log(listBet[betId])
+    expect(listBet[betId].beat).to.be.null
     // Bob <-> Game: <beat> **chose (S|E|W)**
     await bob.runTarget({
       contract: game,
       method: 'beat',
       params: {betId, chose: 'E'},
-      value: locklift.utils.convertCrystal(10.1, 'nano'), // FIXME
+      value: toNano(7),
       keyPair,
     })
+    console.log(await balances())
     // Alice <-> Game: <get> **status game**
-    console.log((await game.call({method: 'listBet'}))[betId])
-    console.log('game=', await balance(game))
-    console.log('alice=', await balance(alice))
-    console.log('bob=', await balance(bob))
+    listBet = await game.call({method: 'listBet'})
+    expect(listBet[betId].beat).to.be.not.null
     // Alice -> Game: <send> **chose+notice** (end game)
     await alice.runTarget({
       contract: game,
@@ -111,9 +121,9 @@ describe('Game', async function () {
       params: {betId, betChose: 'S', notice: `0x${bet.notice.toString(16)}`},
       keyPair,
     })
+    console.log(await balances())
+    listBet = await game.call({method: 'listBet'})
     console.log(await game.call({method: 'listBet'}))
-    console.log('game=', await balance(game))
-    console.log('alice=', await balance(alice))
-    console.log('bob=', await balance(bob))
+    expect(Object.keys(listBet).length).to.be.equal(0)
   })
 })

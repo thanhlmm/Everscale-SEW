@@ -3,6 +3,7 @@ pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 
 import "GameBase.sol";
+import "util/Gas.sol";
 
 contract Game is
 GameBase
@@ -18,31 +19,40 @@ GameBase
         _addOption("W", ["E"]);
     }
 
-    function bet(uint256 betHash) external returns(optional(Bet) status) {
+    function bet(
+        uint256 betHash,
+        uint128 amount
+    ) external {
         require(msg.sender != address(0), 401);
-        require(msg.value > 0 && betHash != 0, 403);
+        require(msg.value >= amount + Gas.BET, 403);
+        tvm.rawReserve(amount, 4);
+        require(betHash != 0, 403);
         // TODO maybe need add veryfi hash
-        status = _addBet(msg.sender, betHash, msg.value);
+        optional(Bet) status = _addBet(msg.sender, betHash, amount);
         if (status.hasValue()) {
            emit BetCreated(msg.sender, status.get());
         }
+        msg.sender.transfer({value: 0, flag: 128});
     }
 
     function beat(
         uint256 betId,
         string chose
-    ) external returns(optional(Bet) status) {
+    ) external {
         require(msg.sender != address(0), 401);
-        require(msg.value > 0 && betId != 0, 403); // FIXME amount
+        require(betId != 0, 403);
         require(listBet.exists(betId), 404);
-        Bet data = listBet.fetch(betId).get();
-        require(msg.value >= data.amount, 403);
-        require(!data.beat.hasValue(), 403);
-        data.beat = Beat(msg.sender, chose);
-        status = listBet.getReplace(betId, data);
+        Bet betData = listBet.fetch(betId).get();
+        require(msg.value >= betData.amount + Gas.BEAT, 403);
+        require(!betData.beat.hasValue(), 403);
+        betData.beat = Beat(msg.sender, chose);
+        tvm.rawReserve(betData.amount, 4);
+        betData.amount += betData.amount;
+        optional(Bet) status = listBet.getReplace(betId, betData);
         if (status.hasValue()) {
             emit BetBeaten(msg.sender, status.get());
         }
+        msg.sender.transfer({value: 0, flag: 128});
     }
 
     function redeem(
@@ -52,21 +62,24 @@ GameBase
     ) external {
         require(msg.sender != address(0), 401);
         require(listBet.exists(betId), 404);
-        Bet data = listBet.fetch(betId).get();
-        require(data.beat.hasValue(), 404);
-        require(msg.sender == data.user || msg.sender == data.beat.get().user, 403);
-        require(_validateBet(data, betChose, notice), 501);
-        uint2 status = _checkBet(data, betChose.get());
+        Bet betData = listBet.fetch(betId).get();
+        require(betData.beat.hasValue(), 404);
+        require(msg.sender == betData.user || msg.sender == betData.beat.get().user, 403);
+        require(_validateBet(betData, betChose, notice), 501);
+        uint2 status = _checkBet(betData, betChose.get());
+        uint128 reward = _calcReward(betData.amount);
+        tvm.rawReserve(reward, 12);
         if (status == 1) {
-            data.user.transfer(_calc(data.amount), false, 1);
+            betData.user.transfer(reward, false, 1);
         } else if (status == 2) {
-            data.beat.get().user.transfer(_calc(data.amount), false, 1);
+            betData.beat.get().user.transfer(reward, false, 1);
         } else {
-            uint128 amount = math.divr(_calc(data.amount), 2);
-            data.user.transfer(amount, false, 1);
-            data.beat.get().user.transfer(amount, false, 1);
+            uint128 amount = math.divr(reward, 2);
+            betData.user.transfer(amount, false, 1);
+            betData.beat.get().user.transfer(amount, false, 1);
         }
         delete listBet[betId];
+        msg.sender.transfer({value: 0, flag: 128});
     }
 
     // listOption

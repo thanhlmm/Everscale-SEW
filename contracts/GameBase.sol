@@ -19,9 +19,8 @@ abstract contract GameBase {
         emit RakeChanged(rake);
     }
 
-    function _calc(uint128 amount) internal view returns(uint128) {
-        uint128 total = amount * 2;
-        return total - Util.percentage(total, rake);
+    function _calcReward(uint128 amount) internal view returns(uint128) {
+        return amount - Util.percentage(amount, rake);
     }
 
     // Public off-chain utils
