@@ -24,7 +24,8 @@
     "se-local-reset": "everdev se reset",
     "setup-everdev": "everdev sol set --compiler 0.57.3 --linker 0.14.39",
     "build-contracts": "locklift build --config locklift.config.js",
-    "contract-deploy-local": "yarn se-local-reset && locklift run --config locklift.config.js --network local --script scripts/local-deploy.js",
+    "contract-deploy-local": "yarn se-local-reset && locklift run --config locklift.config.js --network local --script scripts/deploy.js",
+    "contract-deploy-dev": "locklift run --config locklift.config.js --network dev --script scripts/deploy.js",
     "test-contracts": "yarn se-local-reset && locklift test --config locklift.config.js --network local",
     "test": "yarn test-contracts"
   },

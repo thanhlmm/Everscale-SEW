@@ -26,6 +26,12 @@ yarn test
 
 ### Deploy
 
+`local`
 ```shell
 yarn contract-deploy-local
+```
+
+`dev`
+```shell
+yarn contract-deploy-dev
 ```
