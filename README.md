@@ -35,3 +35,8 @@ yarn contract-deploy-local
 ```shell
 yarn contract-deploy-dev
 ```
+
+## Frontend
+
+- src: [github.com/EverscaleGuild/Everscale-SEW-fronten](https://github.com/EverscaleGuild/Everscale-SEW-frontend)
+- demo: [everscaleguild.github.io/Everscale-SEW](https://everscaleguild.github.io/Everscale-SEW/)
