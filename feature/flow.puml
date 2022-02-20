@@ -7,7 +7,7 @@ participant Alice
 
 box "Everscale" #LightBlue
 participant Repository
-participant SEW
+participant Game
 participant NFT
 end box
 
@@ -16,38 +16,39 @@ participant Bob
 Alice -> Alice: <generate> **notice**
 activate Alice
 Alice -> Alice: <make> **chose (S|E|W)**
-Alice -> SEW: <bid> **sha256** of **chose+notice** (mint NFT)
-activate SEW #LightSalmon
-SEW -> NFT: <mint> **create NFT**
+Alice -> Game: <bet> **sha256** of **chose+notice** (mint NFT)
+activate Game #LightSalmon
+Game -> NFT: <mint> **create NFT**
 activate NFT #LightSalmon
-NFT -> NFT: <mint> **created NFT for SEW**
-NFT -> SEW: <???>
+NFT -> NFT: <mint> **created NFT for Game**
+NFT -> Game: <???>
 deactivate NFT
 Alice -> Alice: <encrypt> **notice**
 Alice <-> Repository: <send> **encrypted notice**
 activate Repository #LightSalmon
 Bob <-> NFT: <list> **list NFT**
 activate Bob
-Bob <-> SEW: <bid> **chose (S|E|W)**
-Alice <-> SEW: <get> **status game**
+Bob <-> Game: <beat> **chose (S|E|W)**
+Alice <-> Game: <get> **status game**
 
 Alice <-> Repository: <get> **encrypted notice**
 Alice -> Alice: <decipher> **notice**
-Alice -> SEW: <send> **chose+notice** (end game)
+Alice -> Game: <send> **chose+notice** (end game)
 
 alt Alice win case
-    SEW -> Alice: <transfer> **reward**
-    SEW -> NFT: <transfer> **Make Alice of NFT**
+    Game -> Alice: <transfer> **reward=bank-rake**
+    Game -> NFT: <transfer> **Make Alice of NFT**
 else Bob win case
-    SEW -> Bob: <transfer> **reward**
-    SEW -> NFT: <transfer> **Make Bob of NFT**
+    Game -> Bob: <transfer> **reward=bank-rake**
+    Game -> NFT: <transfer> **Make Bob of NFT**
     deactivate Bob
 else Standoff case
-    SEW -> SEW: <increment bank> **jackpot**
-    SEW -> NFT: <burn> **Delete NFT**
+    Game -> Alice: <transfer> **reward=(bank-rake)/2**
+    Game -> Bob: <transfer> **reward=(bank-rake)/2**
+    Game -> NFT: <burn> **Delete NFT**
 end
 
-deactivate SEW
+deactivate Game
 Alice <-> Repository: <delete> **encrypted notice**
 deactivate Alice
 deactivate Repository
