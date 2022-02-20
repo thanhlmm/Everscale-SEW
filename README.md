@@ -1,7 +1,7 @@
 # Everscale SEW
 
 <p align="center">
-    <img src="http://www.plantuml.com/plantuml/proxy?cache=yes&src=https://raw.githubusercontent.com/EverscaleGuild/Everscale-SEW/main/feature/flow.puml?token=GHSAT0AAAAAABHKZ6A2IIX6IO6DV6KZQASWYQRZSVA"/>
+    <img src="http://www.plantuml.com/plantuml/proxy?cache=yes&src=https://raw.githubusercontent.com/EverscaleGuild/Everscale-SEW/main/feature/flow.puml"/>
 </p>
 
 ## Develop environment require
