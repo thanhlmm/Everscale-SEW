@@ -2,6 +2,9 @@
 skinparam shadowing false
 skinparam backgroundColor #LightGrey
 skinparam handwritten false
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+autonumber
 
 participant Alice
 
