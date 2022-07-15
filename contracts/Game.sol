@@ -1,4 +1,4 @@
-pragma ton-solidity >= 0.57.3;
+pragma ton-solidity >= 0.61.2;
 pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 
@@ -55,6 +55,7 @@ GameBase
         msg.sender.transfer({value: 0, flag: 128});
     }
 
+    event Reward(mapping(address => uint128) list);
     function redeem(
         uint256 betId,
         optional(string) betChose,
@@ -69,16 +70,25 @@ GameBase
         uint2 status = _checkBet(betData, betChose.get());
         uint128 reward = _calcReward(betData.amount);
         tvm.rawReserve(reward, 12);
+
+        mapping(address => uint128) rewardList;
         if (status == 1) {
             betData.user.transfer(reward, false, 1);
+            rewardList.add(betData.user, reward);
         } else if (status == 2) {
             betData.beat.get().user.transfer(reward, false, 1);
+            rewardList.add(betData.beat.get().user, reward);
         } else {
             uint128 amount = math.divr(reward, 2);
+
             betData.user.transfer(amount, false, 1);
+            rewardList.add(betData.user, amount);
+
             betData.beat.get().user.transfer(amount, false, 1);
+            rewardList.add(betData.beat.get().user, amount);
         }
         delete listBet[betId];
+        emit Reward(rewardList);
         msg.sender.transfer({value: 0, flag: 128});
     }
 
@@ -95,6 +105,7 @@ GameBase
     pure returns(uint256) {
         return tvm.hash(chose); // TODO add upper https://github.com/willitscale/solidity-util/blob/master/lib/Strings.sol#L306-L315
     }
+
     function _addOption(string chose, string[] win)
     private
     returns(bool) {
