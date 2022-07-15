@@ -20,9 +20,11 @@
   "homepage": "https://github.com/EverscaleGuild/Everscale-SEW#readme",
   "scripts": {
     "nvm": "echo $npm_package_engines_node | cut -d'=' -f2",
-    "postinstall": "yarn setup-everdev",
+    "postinstall": "yarn setup",
     "se-local-reset": "everdev se reset",
-    "setup-everdev": "everdev sol set --compiler 0.57.3 --linker 0.14.39",
+    "setup": "npm run setup-se && npm run setup-sol",
+    "setup-se": "everdev se set --port 80 --version 0.32.0",
+    "setup-sol": "everdev sol set --compiler 0.61.2 --linker 0.15.54",
     "build-contracts": "locklift build --config locklift.config.js",
     "contract-deploy-local": "yarn se-local-reset && locklift run --config locklift.config.js --network local --script scripts/deploy.js",
     "contract-deploy-dev": "locklift run --config locklift.config.js --network dev --script scripts/deploy.js",
@@ -35,7 +37,7 @@
   "devDependencies": {
     "@broxus/contracts": "EverscaleGuild/broxus-contracts",
     "chai": "^4.3.6",
-    "everdev": "^1.1.1",
+    "everdev": "^1.2.1",
     "locklift": "ilyar/ton-locklift"
   }
 }

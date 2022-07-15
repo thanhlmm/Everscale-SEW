@@ -48,24 +48,6 @@ describe('Game', async function () {
     expect(response.toNumber()).to.be.equal(111, 'Wrong rake')
   })
 
-  it('Game::createBet', async function () {
-    // bad
-    try {
-      await game.call({
-        method: 'createBet', params: {chose: "X"}
-      })
-      expect(false).to.be.equal(true)
-    } catch (e) {
-      expect(e.data.exit_code).to.be.equal(404)
-    }
-    // ok
-    const response = await game.call({
-      method: 'createBet', params: {chose: "S"}
-    })
-    expect(response.hash).to.not.empty
-    expect(response.notice).to.not.empty
-  })
-
   it('Game::wallets', async function () {
     this.timeout(10000)
     alice = await walletTestDeploy(locklift)
@@ -80,16 +62,21 @@ describe('Game', async function () {
     this.timeout(10000)
     console.log(await balances())
     // Alice -> Alice: <make> **chose (S|E|W)**
+    const notice = 42
     const bet = await game.call({
-      method: 'createBet', params: {chose: "S"}
+      method: 'createHash', params: {
+        nameOption: 'S',
+        notice,
+      }
     })
+    console.log('bet', bet)
     const [keyPair] = await locklift.keys.getKeyPairs()
     // Alice -> Game: <bid> **sha256** of **chose+notice** (mint NFT)
     await alice.runTarget({
       contract: game,
       method: 'bet',
       params: {
-        betHash: `0x${bet.hash.toString(16)}`,
+        betHash: `0x${bet.toString(16)}`,
         amount: toNano(5),
       },
       value: toNano(6),
@@ -118,7 +105,11 @@ describe('Game', async function () {
     await alice.runTarget({
       contract: game,
       method: 'redeem',
-      params: {betId, betChose: 'S', notice: `0x${bet.notice.toString(16)}`},
+      params: {
+        betId,
+        betChose: 'S',
+        notice,
+      },
       keyPair,
     })
     console.log(await balances())

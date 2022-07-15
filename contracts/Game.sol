@@ -168,14 +168,4 @@ GameBase
             Bet(user, betHash, amount, null)
         );
     }
-
-    // Public off-chain utils
-    function createBet(
-        string chose
-    ) public view returns(uint256 hash, uint256 notice) {
-        require(_existsOption(chose), 404);
-        rnd.shuffle();
-        notice = rnd.next();
-        hash = createHash(chose, notice);
-    }
 }

@@ -39,6 +39,23 @@
     locklift "^1.4.5"
     mocha-logger "^1.0.7"
 
+"@eversdk/appkit@^0":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@eversdk/appkit/-/appkit-0.3.1.tgz#8af3ab3ce52ef49be09a1161df455b9a5c7c6529"
+  integrity sha512-WqlBIy8obZhTOAopdHCI7+S3obPtY3Bf/9Dtpbs9QccdiGD1NaCdmpSAcSpizx1eZo50/ie6PKRnuCZm4Sp6EA==
+  dependencies:
+    "@eversdk/core" "^1"
+
+"@eversdk/core@^1":
+  version "1.36.0"
+  resolved "https://registry.yarnpkg.com/@eversdk/core/-/core-1.36.0.tgz#29ebab380c80011654a6d6df8facad418c3d7be8"
+  integrity sha512-5bMgELUzBmXVOwv+vS/s56kTVA3TiwuxHLqN6Lhla5R7sPK8aglFag2S7BlSGYlC1QsLElMdrTolOTWanuvSjw==
+
+"@eversdk/lib-node@^1":
+  version "1.36.0"
+  resolved "https://registry.yarnpkg.com/@eversdk/lib-node/-/lib-node-1.36.0.tgz#90dd405a0a34bbf8e0be26ea68160df08e4a2776"
+  integrity sha512-rnWNabnwofj0aMHAWdmDTGqQwwJV8LCJpxYER9XLh9LjXJJAVAxMnHydSlUZhzGarZJSxj3JWZQo0eScePyZgg==
+
 "@octokit/auth-token@^2.4.4":
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/@octokit/auth-token/-/auth-token-2.5.0.tgz#27c37ea26c205f28443402477ffd261311f21e36"
@@ -152,19 +169,12 @@
   dependencies:
     defer-to-connect "^2.0.0"
 
-"@tonclient/appkit@^0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@tonclient/appkit/-/appkit-0.3.0.tgz#bf5f975c5753ea426c9ef9f5dc0e849f6aad816d"
-  integrity sha512-ZIl3od8kQL/8zvhn+dnZpnaWxuBWrE2YaxIf+McURHLUG1l5aL/yzrIzUq5kgz/HokJnLaEMcCAhmO09FeofNw==
-  dependencies:
-    "@tonclient/core" "^1"
-
-"@tonclient/core@^1", "@tonclient/core@^1.28.0":
+"@tonclient/core@^1.28.0":
   version "1.30.0"
   resolved "https://registry.yarnpkg.com/@tonclient/core/-/core-1.30.0.tgz#789d919e51c8aa86a9718521b5658666e75b521d"
   integrity sha512-/3ECtGoyOs22U3QjD0stxxPOS39tumFvkx2xly3QJmIUhZccoFMwgWzah8QelLz4+nzzaDJxGeVgiknfgsGSZg==
 
-"@tonclient/lib-node@^1", "@tonclient/lib-node@^1.28.0":
+"@tonclient/lib-node@^1.28.0":
   version "1.30.0"
   resolved "https://registry.yarnpkg.com/@tonclient/lib-node/-/lib-node-1.30.0.tgz#2ae938959f6d55ce93810b0920d4059088a5f6ab"
   integrity sha512-gp2l5E0rDOJOYA3J9U0RxDu/kkUVkvGrQfOieyc6qd1EcwS+Zuac4KJvmrpxITkUBNDCJd2dhLeXoyOIjdQe/g==
@@ -873,14 +883,14 @@ eventemitter3@^3.1.0:
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.2.tgz#2d3d48f9c346698fce83a85d7d664e98535df6e7"
   integrity sha512-tvtQIeLVHjDkJYnzf2dgVMxfuSGJeM/7UCG17TT4EumTfNtF+0nebF/4zWOIkCreAbtNqhGEboB6BWrwqNaw4Q==
 
-everdev@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/everdev/-/everdev-1.1.1.tgz#ace5e8650aa196dd82bb78997547a72a2f3514fa"
-  integrity sha512-LXGXNY2slxfEY4r/AwjI27lpmShozNRicBS8cc6re2Q/p1iToN7VqWXwBkXYkidv8jmpbSXS2nXpSolNcf3xLw==
+everdev@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/everdev/-/everdev-1.2.1.tgz#2047929408f0f600cb4d7733685336ae46c92c6f"
+  integrity sha512-FkkXHMSpjrnjg5LJ//VLi/6OjdteqIHAQYqU16ieAMV4/vlX1PoN2liTvEPVrWwDHw57y0lXG7amaPMTyMfg8A==
   dependencies:
-    "@tonclient/appkit" "^0"
-    "@tonclient/core" "^1"
-    "@tonclient/lib-node" "^1"
+    "@eversdk/appkit" "^0"
+    "@eversdk/core" "^1"
+    "@eversdk/lib-node" "^1"
     chalk "^2.4.2"
     dockerode "^3.3.1"
     fs-extra "^9.1.0"
