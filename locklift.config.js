@@ -4,10 +4,12 @@ module.exports = {
     },
     linker: {
         path: '~/.everdev/solidity/tvm_linker',
-        lib: '~/.everdev/solidity/stdlib_sol.tvm',
+    },
+    lib: {
+        path: '~/.everdev/solidity/stdlib_sol.tvm',
     },
     networks: {
-        local: {
+        localnet: {
             ton_client: {
                 network: {
                     server_address: 'http://localhost',

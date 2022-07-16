@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" sizes="48x48" href="../asset/logo.png">
+    <title>Cryptographic game SEW (Slashing, EVER, Whitepaper)</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+    <div class="px-4 py-5 my-5 text-center">
+        <img class="d-block mx-auto mb-4" src="../asset/logo.svg" alt="everscale" height="100">
+        <div class="col-lg-6 mx-auto"><p class="lead mb-4" data-behavior="network"></p></div>
+        <div class="col-lg-6 mx-auto" data-behavior="extension" style="display: none">
+            <div class="mb-4 alert alert-danger" role="alert">Need installed Extension <a href="https://l1.broxus.com/everscale/wallet">EVER Wallet</a></div>
+        </div>
+        <div class="col-lg-6 mx-auto" data-behavior="login" style="display: none">
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+            </div>
+        </div>
+        <div class="col-lg-6 mx-auto" data-behavior="main" style="display: none">
+            <div class="card m-5 d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <div class="card-body">
+                    <p><b>address:</b> <span data-behavior="address"></span></p>
+                    <p><b>publicKey:</b> <span data-behavior="publicKey"></span></p>
+                </div>
+            </div>
+            <div class="card m-5 d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <div class="card-body" data-behavior="out">...</div>
+            </div>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <button type="button" class="btn btn-primary btn-lg px-4 gap-3"
+                        data-behavior="renderHelloWorldAction">HelloWorld</button>
+                <button type="button" class="btn btn-primary btn-lg px-4 gap-3"
+                        data-behavior="timestampAction">read</button>
+                <button type="button" class="btn btn-primary btn-lg px-4 gap-3"
+                        data-behavior="touchAction">write</button>
+                <button type="button" class="btn btn-primary btn-lg px-4 gap-3"
+                        data-behavior="disconnectAction">Disconnect</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button"
+                            class="btn btn-primary btn-lg px-4 gap-3"
+                            data-behavior="connectEverWallet">Ever Wallet</button>
+                    <button type="button"
+                            class="btn btn-primary btn-lg px-4 gap-3"
+                            data-behavior="connectMetaMask">MetaMask</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="App.ts"></script>
+</body>
+</html>
