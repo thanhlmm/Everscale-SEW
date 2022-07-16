@@ -21,36 +21,59 @@ const provider: ProviderList = {
     everscale: null,
 }
 
-async function createHash(): Promise<string> {
+async function bet(nameOption: string): Promise<void> {
+    const contract = await Contract()
+    const selected = await selectedConnection('everscale', provider)
+    const selectedAddress = new Address(selected.address)
+    await contract.methods.bet({
+        betHash: await createHash('42', nameOption),
+        amount: '1000000000'
+    }).send({
+        from: selectedAddress,
+        amount: '2000000000',
+        bounce: true,
+    })
+}
+
+async function createHash(notice: string, nameOption: string): Promise<string> {
     const contract = await Contract()
     const out = await contract.methods.createHash({
-        notice: '42',
-        nameOption: 'E'
+        notice,
+        nameOption
     }).call()
     return out.hash
 }
+
+interface Bet {
+    id: string
+    amount: string
+    hash: string
+    beat: unknown | null
+    user: Address
+}
+
+async function listBet(): Promise<Map<string, Bet>> {
+    const contract = await Contract()
+    const out = await contract.methods.listBet({}).call()
+    const list = new Map<string, Bet>()
+    out.listBet.forEach((it) => {
+        list.set(it[0], {
+            id: it[0],
+            ...it[1]
+        })
+    })
+    return list
+}
+
 const actionList = {
     listBet: async () => {
-        const contract = await Contract()
-        const out = await contract.methods.listBet({}).call()
-        console.log('listBet:', out)
-        behavior('out', innerText(out.listBet.toString()))
+        const out = await listBet()
+        console.log(Object.fromEntries(out.entries()))
+        behavior('out', innerText(JSON.stringify(Object.fromEntries(out.entries()), null, 2)))
     },
-    bet: async () => {
-        const contract = await Contract()
-        const selected = await selectedConnection('everscale', provider)
-        const selectedAddress = new Address(selected.address)
-        const out = await contract.methods.bet({
-            betHash: await createHash(),
-            amount: '1000000000'
-        }).send({
-            from: selectedAddress,
-            amount: '2000000000',
-            bounce: true,
-        })
-        console.log('listBet:', out)
-        behavior('out', innerText(out.listBet.toString()))
-    }
+    betS: async () => await bet('S'),
+    betE: async () => await bet('E'),
+    betW: async () => await bet('W'),
 }
 
 function loginModalHide() {
@@ -160,6 +183,7 @@ async function subscribeEthereum() {
         console.log(code, reason);
     })
 }
+
 async function subscribeEverscale() {
     if (!provider.everscale) {
         return

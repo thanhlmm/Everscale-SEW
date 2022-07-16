@@ -8,13 +8,11 @@ export const innerText = (text: string) => (elem: HTMLElement | HTMLButtonElemen
 
 export function action(list) {
     behavior('action', elem => elem.onclick = (event) => {
-        try {
-            const name = event.target.dataset.name
+        if (event.target instanceof Element) {
+            const name = event.target.getAttribute('name')
             if (typeof list[name] == 'function') {
                 list[name]()
             }
-        } catch (error) {
-            console.log('action', error)
         }
     })
 }

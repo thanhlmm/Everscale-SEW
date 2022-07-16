@@ -1,5 +1,5 @@
-import { ProviderRpcClient } from "everscale-inpage-provider";
-import {ConnectionNotSelectedError} from "./AppError";
+import { ProviderRpcClient } from 'everscale-inpage-provider'
+import { ConnectionNotSelectedError } from './AppError'
 
 export interface ProviderList {
     ethereum: unknown | null
