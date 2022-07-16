@@ -12,21 +12,22 @@ const balance = async (contract, fractionDigits) => {
   return toEver((await locklift.ton.getBalance(contract.address))).toNumber().toFixed(fractionDigits)
 }
 
+let alice
+let aliceAddress = '0:38aef7169789d2dd39598bcdc54e3f13adc4848bf4dc46c1d888b9727ad21405'
+let bob
+let bobAddress = '0:51a30d70e76a509dba6227416aaaf0cc86f06ccadc0dc49177898b293f14a822'
+let game
+
+async function balances(fractionDigits = 0) {
+  return {
+    game: await balance(game, fractionDigits),
+    alice: await balance(alice, fractionDigits),
+    bob: await balance(bob, fractionDigits),
+  }
+}
+
 describe('Game', async function () {
   const contract = await locklift.factory.getContract('Game')
-  let alice
-  let aliceAddress = '0:38aef7169789d2dd39598bcdc54e3f13adc4848bf4dc46c1d888b9727ad21405'
-  let bob
-  let bobAddress = '0:51a30d70e76a509dba6227416aaaf0cc86f06ccadc0dc49177898b293f14a822'
-  let game
-  let s42Hash = '0x90158cc534e3010661105d3792c895867f4a3d5f17fbd6fc735c088bc1dcf985'
-  const balances = async (fractionDigits = 0) => {
-    return {
-      game: await balance(game, fractionDigits),
-      alice: await balance(alice, fractionDigits),
-      bob: await balance(bob, fractionDigits),
-    }
-  }
   it('Game::artifact', async function () {
     expect(contract.code).not.to.equal(undefined, 'Code should be available')
     expect(contract.abi).not.to.equal(undefined, 'ABI should be available')
@@ -65,30 +66,36 @@ describe('Game', async function () {
       .and.equal(bobAddress)
   })
 
-  it('Game::gamePlay bob win', async function () {
-    this.timeout(10000)
+  const [keyPair] = await locklift.keys.getKeyPairs()
+  let betId
+  const notice = 42
+  const S42Hash = '0x90158cc534e3010661105d3792c895867f4a3d5f17fbd6fc735c088bc1dcf985'
+
+
+  it('Game::BobWin Init balances (start game)', async function () {
     expect(await balances()).to.deep.equalInAnyOrder({
       game: '10',
       alice: '100',
       bob: '100',
     })
-    // Alice -> Alice: <make> **chose (S|E|W)**
-    const notice = 42
+  })
+
+  it('Game::BobWin Alice -> Alice: <make> **chose (S|E|W)**', async function () {
     const bet = await game.call({
       method: 'createHash', params: {
         nameOption: 'S',
         notice,
       }
     })
-    const betHash = `0x${bet.toString(16)}`
-    expect(betHash).to.be.equal(s42Hash)
-    const [keyPair] = await locklift.keys.getKeyPairs()
-    // Alice -> Game: <bid> **sha256** of **chose+notice** (mint NFT)
+    expect(`0x${bet.toString(16)}`).to.be.equal(S42Hash)
+  })
+
+  it('Game::BobWin Alice -> Game: <bid> **sha256** of **chose+notice** (mint NFT)', async function () {
     await alice.runTarget({
       contract: game,
       method: 'bet',
       params: {
-        betHash,
+        betHash: S42Hash,
         amount: toNano(5),
       },
       value: toNano(6),
@@ -99,20 +106,23 @@ describe('Game', async function () {
       alice: '95',
       bob: '100',
     })
+  })
 
-    // Bob <-> NFT: <list> **list NFT**
+  it('Game::BobWin Bob <-> NFT: <list> **list NFT**', async function () {
     let listBet = await game.call({method: 'listBet'})
     expect(Object.keys(listBet).length).to.be.equal(1)
-    const betId = Object.keys(listBet)[0]
+    betId = Object.keys(listBet)[0]
     expect(listBet[betId]).to.deep.equalInAnyOrder({
         user: aliceAddress,
-        hash: s42Hash,
+        hash: S42Hash,
         amount: '5000000000',
         beat: null
       }
     )
     expect(listBet[betId].beat).to.be.null
-    // Bob <-> Game: <beat> **chose (S|E|W)**
+  })
+
+  it('Game::BobWin Bob <-> Game: <beat> **chose (S|E|W)**', async function () {
     await bob.runTarget({
       contract: game,
       method: 'beat',
@@ -125,11 +135,14 @@ describe('Game', async function () {
       alice: '95',
       bob: '95',
     })
+  })
 
-    // Alice <-> Game: <get> **status game**
+  it('Game::BobWin Alice <-> Game: <get> **status game**', async function () {
     listBet = await game.call({method: 'listBet'})
     expect(listBet[betId].beat).to.be.not.null
-    // Alice -> Game: <send> **chose+notice** (end game)
+  })
+
+  it('Game::BobWin Alice -> Game: <send> **chose+notice** (end game)', async function () {
     await alice.runTarget({
       contract: game,
       method: 'redeem',
