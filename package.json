@@ -41,7 +41,7 @@
     "serve": "yarn build && serve -s dist -l 3000",
     "prestart": "yarn build-deps",
     "start": "parcel src/App.html",
-    "test-contracts": "yarn se-local-reset && locklift test --config locklift.config.js --network local",
+    "test-contracts": "yarn se-local-reset && locklift test --config locklift.config.js --network localnet",
     "test": "yarn test-contracts"
   },
   "engines": {
@@ -54,6 +54,7 @@
     "bootstrap": "^5.1.3",
     "chai": "^4.3.6",
     "convert-svg-to-png": "^0.6.4",
+    "deep-equal-in-any-order": "^2.0.0",
     "everdev": "^1.2.1",
     "everscale-inpage-provider": "^0.3.28",
     "everscale-standalone-client": "^2.0.18",
