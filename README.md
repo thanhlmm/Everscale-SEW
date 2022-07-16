@@ -26,14 +26,25 @@ yarn test
 
 ### Deploy
 
-`local`
+`compile`
+```shell
+yarn contract-compile
+```
+
+`localnet`
 ```shell
 yarn contract-deploy-local
 ```
 
-`dev`
+`testnet`
 ```shell
-yarn contract-deploy-dev
+yarn contract-deploy-test
+```
+
+## Release
+
+```shell
+yarn release
 ```
 
 ## Frontend

@@ -10,20 +10,24 @@
 <body>
     <div class="px-4 py-5 my-5 text-center">
         <img class="d-block mx-auto mb-4" src="../asset/logo.svg" alt="everscale" height="100">
+        <div class="col-lg-6 mx-auto">Cryptographic game SEW (Slashing, EVER, Whitepaper)</div>
         <div class="col-lg-6 mx-auto"><p class="lead mb-4" data-behavior="network"></p></div>
-        <div class="col-lg-6 mx-auto" data-behavior="extension" style="display: none">
-            <div class="mb-4 alert alert-danger" role="alert">Need installed Extension <a href="https://l1.broxus.com/everscale/wallet">EVER Wallet</a></div>
-        </div>
         <div class="col-lg-6 mx-auto" data-behavior="login" style="display: none">
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+                <button type="button"
+                        class="btn btn-primary"
+                        data-behavior="connect"
+                        data-bs-toggle="modal"
+                        data-bs-target="#loginModal">Login</button>
             </div>
         </div>
         <div class="col-lg-6 mx-auto" data-behavior="main" style="display: none">
             <div class="card m-5 d-grid gap-2 d-sm-flex justify-content-sm-center">
                 <div class="card-body">
-                    <p><b>address:</b> <span data-behavior="address"></span></p>
-                    <p><b>publicKey:</b> <span data-behavior="publicKey"></span></p>
+                    <p><b>EVER:</b></p>
+                    <p><b>address:</b> <span data-behavior="everAddress"></span></p>
+                    <p><b>publicKey:</b> <span data-behavior="everPublicKey"></span></p>
+                    <p><b>EVM:</b></p>
                 </div>
             </div>
             <div class="card m-5 d-grid gap-2 d-sm-flex justify-content-sm-center">
@@ -31,11 +35,13 @@
             </div>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
                 <button type="button" class="btn btn-primary btn-lg px-4 gap-3"
-                        data-behavior="renderHelloWorldAction">HelloWorld</button>
+                        data-behavior="action"
+                        data-name="bet"
+                >bet</button>
                 <button type="button" class="btn btn-primary btn-lg px-4 gap-3"
-                        data-behavior="timestampAction">read</button>
-                <button type="button" class="btn btn-primary btn-lg px-4 gap-3"
-                        data-behavior="touchAction">write</button>
+                        data-behavior="action"
+                        data-name="listBet"
+                >listBet</button>
                 <button type="button" class="btn btn-primary btn-lg px-4 gap-3"
                         data-behavior="disconnectAction">Disconnect</button>
             </div>

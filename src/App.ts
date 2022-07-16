@@ -9,72 +9,49 @@ import abi from '../build/Game.abi'
 import addr from '../build/Game.addr'
 import {
     behavior,
+    action,
     innerText,
-} from './util'
-
-
-interface ProviderList {
-    ethereum: null
-    everscale: ProviderRpcClient | null
-}
+} from './browser'
+import {
+    ProviderList, selectedConnection
+} from './blockchain'
 
 const provider: ProviderList = {
     ethereum: null,
     everscale: null,
 }
 
-// async function timestampAction() {
-//     const contract = await Contract()
-//     try {
-//         const out = await contract.methods.timestamp({}).call()
-//         behavior('out', innerText(out.timestamp))
-//     } catch (error) {
-//         console.error(error)
-//     }
-// }
-//
-// async function renderHelloWorldAction() {
-//     const contract = await Contract()
-//     try {
-//         const out = await contract.methods.renderHelloWorld({}).call()
-//         behavior('out', innerText(out.value0))
-//     } catch (error) {
-//         console.error(error)
-//     }
-// }
-
-// async function touchAction() {
-//     const contract = await Contract()
-//     const providerState = await ever.getProviderState()
-//     const publicKey = providerState.permissions.accountInteraction.publicKey
-//     console.error(`touchAction publicKey=${publicKey}`)
-//     try {
-//         const response = await contract.methods.touch({}).sendExternal({
-//             publicKey,
-//             withoutSignature: true,
-//         })
-//         console.log(response)
-//         const trx = response.transaction
-//         const out = `aborted=${trx.aborted} <a href="${await explorerTransactionDetails(trx.id.hash)}">trx=${trx.id.hash}</a>`
-//         behavior('out',elem => elem.innerHTML = out)
-//     } catch (error) {
-//         console.error(error)
-//     }
-// }
-
-// async function explorerTransactionDetails(hash: string) {
-//     const providerState = await ever.getProviderState()
-//     switch (providerState.selectedConnection) {
-//         case 'mainnet':
-//             return `https://ever.live/transactions/transactionDetails?id=${hash}`
-//         case 'testnet':
-//             return `https://net.ever.live/transactions/transactionDetails?id=${hash}`
-//         case 'localnet':
-//             return `http://localhost/transactions/transactionDetails?id=${hash}`
-//         default:
-//             return `#${hash}`
-//     }
-// }
+async function createHash(): Promise<string> {
+    const contract = await Contract()
+    const out = await contract.methods.createHash({
+        notice: '42',
+        nameOption: 'E'
+    }).call()
+    return out.hash
+}
+const actionList = {
+    listBet: async () => {
+        const contract = await Contract()
+        const out = await contract.methods.listBet({}).call()
+        console.log('listBet:', out)
+        behavior('out', innerText(out.listBet.toString()))
+    },
+    bet: async () => {
+        const contract = await Contract()
+        const selected = await selectedConnection('everscale', provider)
+        const selectedAddress = new Address(selected.address)
+        const out = await contract.methods.bet({
+            betHash: await createHash(),
+            amount: '1000000000'
+        }).send({
+            from: selectedAddress,
+            amount: '2000000000',
+            bounce: true,
+        })
+        console.log('listBet:', out)
+        behavior('out', innerText(out.listBet.toString()))
+    }
+}
 
 function loginModalHide() {
     const loginModal = document.getElementById('loginModal')
@@ -85,12 +62,8 @@ function loginModalHide() {
 async function connectMetaMask() {
     loginModalHide()
     await provider.ethereum.request({ method: 'eth_requestAccounts' })
-
-// The MetaMask plugin also allows signing transactions to
-// send ether and pay to change state within the blockchain.
-// For this, you need the account signer...
-    //const signer = provider.getSigner()
 }
+
 function connectEverWallet() {
     if (!provider.everscale) {
         throw new Error('connectEverWallet')
@@ -131,32 +104,10 @@ async function checkConnect() {
         }
         behavior('connect', connectText)
     } else {
-        // INFO for transactionsFound and contractStateChanged need permissions
-        const providerState = await provider.everscale.getProviderState()
-        (await provider.everscale.subscribe('transactionsFound', {
-            address: contractAddress(providerState.selectedConnection),
-        })).on('data', (event) => {
-            console.log(':', {
-                address: event.address,
-                transactions: event.transactions,
-                info: event.info,
-            })
-        })
-        (await provider.everscale.subscribe('contractStateChanged', {
-            address: contractAddress(providerState.selectedConnection),
-        })).on('data', (event) => {
-            console.log('permissionsChanged:', {
-                address: event.address,
-                state: event.state,
-            })
-        })
         switchScreen('main')
         const account = permissions.accountInteraction
-        behavior('address', innerText(account.address.toString()))
-        behavior('publicKey', innerText(account.publicKey.toString()))
-        // behavior('timestampAction', elem => elem.onclick = timestampAction)
-        // behavior('renderHelloWorldAction', elem => elem.onclick = renderHelloWorldAction)
-        // behavior('touchAction', elem => elem.onclick = touchAction)
+        behavior('everAddress', innerText(account.address.toString()))
+        behavior('everPublicKey', innerText(account.publicKey.toString()))
         behavior('disconnectAction', elem => elem.onclick = disconnectAction)
     }
 }
@@ -182,7 +133,6 @@ async function Contract() {
 
 function switchScreen(to: string) {
     [
-        'extension',
         'login',
         'main',
     ].forEach(screen => {
@@ -259,6 +209,7 @@ async function detectProvider() {
 }
 
 async function App() {
+    action(actionList)
     await detectProvider()
     console.log(provider)
     await mainFlow()

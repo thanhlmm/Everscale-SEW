@@ -35,17 +35,15 @@
     "contract-addr-cat": "printf 'export default {%s}\n' \"$(cat $(ls build/*.addr))\" > build/Game.addr.ts",
     "contract-compile": "locklift build --config locklift.config.js",
     "contract-deploy-local": "yarn se-local-reset && locklift run --config locklift.config.js --network localnet --script scripts/deploy.js && yarn contract-addr-cat",
-    "contract-deploy-dev": "locklift run --config locklift.config.js --network dev --script scripts/deploy.js",
-    "clear": "rm -fr dist build/Game.localnet.addr",
-    "build": "yarn build-web && yarn build-after",
-    "build-prod": "yarn clear && yarn contract-addr-cat && yarn build",
+    "contract-deploy-test": "locklift run --config locklift.config.js --network testnet --script scripts/deploy.js",
+    "build": "yarn contract-addr-cat && yarn build-web && yarn build-after",
+    "release": "yarn build && ipfs-deploy dist",
     "serve": "yarn build && serve -s dist -l 3000",
-    "prestart2": "yarn build-deps",
+    "prestart": "yarn build-deps",
     "start": "parcel src/App.html",
     "test-contracts": "yarn se-local-reset && locklift test --config locklift.config.js --network local",
     "test": "yarn test-contracts"
   },
-  "type": "module",
   "engines": {
     "node": ">=16"
   },

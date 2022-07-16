@@ -34,7 +34,7 @@ module.exports = {
                 amount: 5,
             }
         },
-        dev: {
+        testnet: {
             ton_client: {
                 network: {
                     server_address: 'https://net.ton.dev/',
