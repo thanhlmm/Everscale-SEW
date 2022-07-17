@@ -2,7 +2,7 @@ import { ProviderRpcClient } from 'everscale-inpage-provider'
 import { ConnectionNotSelectedError } from './AppError'
 // @ts-ignore
 import detectEthereumProvider from '@metamask/detect-provider'
-import { EverscaleStandaloneClient } from 'everscale-standalone-client'
+// import { EverscaleStandaloneClient } from 'everscale-standalone-client'
 
 export interface ProviderList {
     ethereum: unknown | null
@@ -88,9 +88,9 @@ export async function detectProvider(): Promise<ProviderList> {
         console.trace('provider: not install MetaMask')
     }
     const ever = new ProviderRpcClient({
-        fallback: () => EverscaleStandaloneClient.create({
-            connection: 'testnet',
-        }),
+        // fallback: () => EverscaleStandaloneClient.create({
+        //     connection: 'testnet',
+        // }),
     })
     if ((await ever.hasProvider())) {
         try {
