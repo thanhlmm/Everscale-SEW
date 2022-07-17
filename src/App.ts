@@ -11,7 +11,6 @@ import GameAddress from '../build/Game.addr'
 import {
     behavior,
     action,
-    innerText,
     getDataVault,
     setDataVault,
 } from './browser'
@@ -24,6 +23,7 @@ import {
     userRender,
     betListRender,
     loginModalHide,
+    switchScreen,
 } from './ui'
 import {
     Bet,
@@ -31,7 +31,7 @@ import {
 } from './GameContract'
 import {
     NotValidParamError
-} from "./AppError";
+} from './AppError'
 
 let provider: ProviderList = {
     ethereum: null,
@@ -175,13 +175,13 @@ async function checkConnect() {
         const connectText = elem => {
             const disabled = !contractAddress(network)
             if ('disabled' in elem) elem.disabled = disabled
-            //elem.innerText = disabled ? `Contract not deployed into ${network}` : `Connect with ${network} for interact contract`
         }
         behavior('connect', connectText)
     } else {
         switchScreen('main')
         const account = permissions.accountInteraction
         userRender(account.address.toString())
+        await refresh()
         behavior('disconnectAction', elem => elem.onclick = disconnectAction)
     }
 }
@@ -206,20 +206,11 @@ async function gameContract(): Promise<Contract<typeof GameABI>> {
     const providerState = await provider.everscale.getProviderState()
     const address = contractAddress(providerState.selectedConnection)
     GameContract = new provider.everscale.Contract(GameABI, address)
-    GameContract.waitForEvent().then(value => {
+    GameContract.waitForEvent().then(async value => {
         console.log(value)
+        await refresh()
     })
     return GameContract
-}
-
-function switchScreen(to: string) {
-    [
-        'login',
-        'main',
-    ].forEach(screen => {
-        const switcher = elem => elem.style.display = (to === screen ? 'block' : 'none')
-        behavior(screen, switcher)
-    })
 }
 
 async function subscribe() {
@@ -266,28 +257,15 @@ async function mainFlow() {
     await subscribe()
 }
 
-async function App() {
-    provider = await detectProvider()
-    console.log(provider)
-    await mainFlow()
+async function refresh() {
     await betListRender(await listBet())
     action(actionList)
 }
 
-// class NApp {
-//     constructor(readonly provider: ProviderList) {
-//     }
-//
-//     async run() {
-//         const app = new NApp(await detectProvider())
-//         return app.mainFlow()
-//     }
-//
-//     async mainFlow() {
-//         const providerState = await provider.everscale.getProviderState()
-//         await setNetworkChanged(providerState.selectedConnection)
-//         await subscribe()
-//     }
-// }
+async function App() {
+    provider = await detectProvider()
+    await mainFlow()
+    await refresh()
+}
 
 App().catch((error) => console.error(error))

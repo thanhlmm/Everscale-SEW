@@ -38,6 +38,7 @@
     "contract-deploy-test": "locklift run --config locklift.config.js --network testnet --script scripts/deploy.js",
     "build": "yarn contract-addr-cat && yarn build-web && yarn build-after",
     "release": "yarn build && ipfs-deploy dist",
+    "release-gh": "yarn build && gh-pages --repo git@github.com:CryptographicSEW/CryptographicSEW.github.io.git --dist dist",
     "serve": "yarn build && serve -s dist -l 3000",
     "prestart": "yarn build-deps",
     "start": "parcel src/App.html",
