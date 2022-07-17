@@ -8,15 +8,12 @@ export const innerText = (text: string) => (elem: HTMLElement | HTMLButtonElemen
 
 export function action(list) {
     behavior('action', elem => elem.onclick = (event) => {
-        console.trace('behavior:action', elem)
         if (event.target instanceof Element) {
             const name = event.target.getAttribute('data-name')
             if (!(typeof list[name] == 'function')) {
                 return
             }
-            console.trace('behavior:action name', name)
             const paramData = event.target.getAttribute('data-param')
-            console.trace('behavior:action param', paramData)
             try {
                 return list[name](JSON.parse(paramData))
             } catch (error) {
@@ -25,4 +22,16 @@ export function action(list) {
             return list[name]()
         }
     })
+}
+
+export function setDataVault(key: string, value: any): void {
+    localStorage.setItem(key, JSON.stringify(value))
+}
+
+export function getDataVault<T>(key: string): T | null {
+    const item = localStorage.getItem(key)
+    if (item) {
+        return JSON.parse(localStorage.getItem(key)) as T
+    }
+    return null
 }

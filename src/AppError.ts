@@ -11,3 +11,7 @@ export class NotSupportTypeError extends AppError {
 export class ConnectionNotSelectedError extends AppError {
   message = 'Connection not selected'
 }
+
+export class NotValidParamError extends AppError {
+  message = 'Not valid param'
+}

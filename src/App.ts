@@ -12,15 +12,26 @@ import {
     behavior,
     action,
     innerText,
+    getDataVault,
+    setDataVault,
 } from './browser'
 import {
     detectProvider,
-    ProviderList, selectedConnection
+    ProviderList,
+    selectedConnection,
 } from './blockchain'
-import {loginModalHide} from './ui'
-import {Bet, ListBet} from './GameContract'
-import {betListRender} from './ui/betList'
-import {userRender} from './ui/user'
+import {
+    userRender,
+    betListRender,
+    loginModalHide,
+} from './ui'
+import {
+    Bet,
+    ListBet,
+} from './GameContract'
+import {
+    NotValidParamError
+} from "./AppError";
 
 let provider: ProviderList = {
     ethereum: null,
@@ -62,9 +73,14 @@ async function redeem(betId: string, hash: string): Promise<void> {
     const selected = await selectedConnection('everscale', provider)
     const selectedAddress = new Address(selected.address)
     const data = getDataVault<CreateHashParam>(hash)
+    if (!data && (!data.nameOption || !data.notice)) {
+        throw new NotValidParamError(hash)
+    }
     await contract.methods.redeem({
         betId: betId,
+        // @ts-ignore
         notice: data.notice,
+        // @ts-ignore
         betChose: data.nameOption,
     }).send({
         from: selectedAddress,
@@ -73,25 +89,13 @@ async function redeem(betId: string, hash: string): Promise<void> {
     })
 }
 
-export function setDataVault(key: string, value: any): void {
-    localStorage.setItem(key, JSON.stringify(value))
-}
-
-export function getDataVault<T>(key: string): T | null {
-    const item = localStorage.getItem(key)
-    if (item) {
-        return JSON.parse(localStorage.getItem(key)) as T
-    }
-    return null
-}
-
 export interface CreateHashParam {
     notice: string
     nameOption: string
 }
 
-async function createHash(nameOption: string): Promise<string> {
-    const notice = `0x${randomBytes(32).toString('hex')}`
+async function createHash(nameOption: string, notice?: string): Promise<string> {
+    notice = notice ? notice : `0x${randomBytes(32).toString('hex')}`
     const contract = await gameContract()
     const param = {
         notice,
@@ -120,20 +124,13 @@ async function listBet(): Promise<ListBet> {
 }
 
 const actionList = {
-    listBet: async () => {
-        const out = await listBet()
-        console.log(Object.fromEntries(out.entries()))
-        behavior('out', innerText(JSON.stringify(Object.fromEntries(out.entries()), null, 2)))
+    bet: async (param) => {
+        await bet(param.chose)
     },
-    betS: async () => await bet('S'),
-    betE: async () => await bet('E'),
-    betW: async () => await bet('W'),
     beat: async (param) => {
-        console.log('beat', param)
         await beat(param.id, param.chose)
     },
     redeem: async (param) => {
-        console.log('redeem', param)
         await redeem(param.id, param.hash)
     },
 }
@@ -161,7 +158,6 @@ function connectEverWallet() {
 }
 
 async function disconnectAction() {
-    console.log('disconnectAction')
     await provider.everscale.disconnect()
 }
 
