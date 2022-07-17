@@ -58,12 +58,14 @@ async function beat(betId: string, chose: string): Promise<void> {
     const contract = await gameContract()
     const selected = await selectedConnection('everscale', provider)
     const selectedAddress = new Address(selected.address)
+    const list = await listBet()
+    const amount = new BigNumber(list.get(betId).amount.toString())
     await contract.methods.beat({
         betId,
         chose,
     }).send({
         from: selectedAddress,
-        amount: '15000000000',
+        amount: amount.plus(1).shiftedBy(9).toString(),
         bounce: true,
     })
 }
