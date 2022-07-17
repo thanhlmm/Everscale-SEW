@@ -12,6 +12,8 @@
         <img class="d-block mx-auto mb-4" src="../asset/logo.svg" alt="everscale" height="100">
         <div class="col-lg-6 mx-auto">Cryptographic game SEW (Slashing, EVER, Whitepaper)</div>
         <div class="col-lg-6 mx-auto"><p class="lead mb-4" data-behavior="network"></p></div>
+        <div data-behavior="betList" class="m-5 d-grid gap-2 d-sm-flex justify-content-sm-center">
+        </div>
         <div class="col-lg-6 mx-auto" data-behavior="login" style="display: none">
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
                 <button type="button"
@@ -22,36 +24,19 @@
             </div>
         </div>
         <div class="col-lg-6 mx-auto" data-behavior="main" style="display: none">
-            <div class="card m-5 d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <div class="card-body">
-                    <p><b>EVER:</b></p>
-                    <p><b>address:</b> <span data-behavior="everAddress"></span></p>
-                    <p><b>publicKey:</b> <span data-behavior="everPublicKey"></span></p>
-                    <p><b>EVM:</b></p>
-                </div>
-            </div>
-            <div class="card m-5 d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <div class="card-body" data-behavior="out">...</div>
-            </div>
+            <div data-behavior="user"
+                 style="width: 10rem;"
+                 class="card"></div>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <button type="button" class="btn btn-primary btn-lg px-4 gap-3"
-                        data-behavior="action"
-                        data-name="betS"
-                >bet S</button>
-                <button type="button" class="btn btn-primary btn-lg px-4 gap-3"
-                        data-behavior="action"
-                        data-name="betE"
-                >bet E</button>
-                <button type="button" class="btn btn-primary btn-lg px-4 gap-3"
-                        data-behavior="action"
-                        data-name="betW"
-                >bet W</button>
-                <button type="button" class="btn btn-primary btn-lg px-4 gap-3"
-                        data-behavior="action"
-                        data-name="listBet"
-                >listBet</button>
-                <button type="button" class="btn btn-primary btn-lg px-4 gap-3"
-                        data-behavior="disconnectAction">Disconnect</button>
+                <div class="btn-group" role="group">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">BET 1E</button>
+                      </div>
+                    <button data-behavior="action" data-name="betS" type="button" class="btn btn-secondary">S</button>
+                    <button data-behavior="action" data-name="betE" type="button" class="btn btn-secondary">E</button>
+                    <button data-behavior="action" data-name="betW" type="button" class="btn btn-secondary">W</button>
+                </div>
+
             </div>
         </div>
     </div>

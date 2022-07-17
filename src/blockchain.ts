@@ -1,5 +1,8 @@
 import { ProviderRpcClient } from 'everscale-inpage-provider'
 import { ConnectionNotSelectedError } from './AppError'
+// @ts-ignore
+import detectEthereumProvider from '@metamask/detect-provider'
+// import { EverscaleStandaloneClient } from 'everscale-standalone-client'
 
 export interface ProviderList {
     ethereum: unknown | null
@@ -71,4 +74,33 @@ export async function explorerTransactionDetails(trx: Transaction) {
         default:
             return `${trxKey}#${trx.id}`
     }
+}
+
+export async function detectProvider(): Promise<ProviderList> {
+    const provider: ProviderList = {
+        ethereum: null,
+        everscale: null,
+    }
+    const ethereum = await detectEthereumProvider()
+    if (ethereum) {
+        provider.ethereum = ethereum
+    } else {
+        console.trace('provider: not install MetaMask')
+    }
+    const ever = new ProviderRpcClient({
+        // fallback: () => EverscaleStandaloneClient.create({
+        //     connection: 'testnet',
+        // }),
+    })
+    if ((await ever.hasProvider())) {
+        try {
+            await ever.ensureInitialized()
+            provider.everscale = ever
+        } catch (error) {
+            throw error // TODO handle it
+        }
+    } else {
+        console.trace('provider: not install Ever Wallet')
+    }
+    return provider
 }

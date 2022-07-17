@@ -4424,6 +4424,11 @@ crypto-random-string@^2.0.0:
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-2.0.0.tgz#ef2a7a966ec11083388369baa02ebead229b30d5"
   integrity sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==
 
+crypto@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
+  integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
+
 css-color-names@0.0.4, css-color-names@^0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/css-color-names/-/css-color-names-0.0.4.tgz#808adc2e79cf84738069b646cb20ec27beb629e0"
@@ -5323,22 +5328,21 @@ everdev@^1.2.1:
     request "^2.88.2"
     unzip-stream "^0.3.1"
 
-everscale-inpage-provider@^0.3.28:
+everscale-inpage-provider@^0.3.10, everscale-inpage-provider@^0.3.28:
   version "0.3.28"
   resolved "https://registry.yarnpkg.com/everscale-inpage-provider/-/everscale-inpage-provider-0.3.28.tgz#13f860b6c8749545b71b9473a9cc0d48dc3e9247"
   integrity sha512-0oUUTgagOj0x8XZT+ktE4vOPtqVM8odrE2TkkQcrdJ0tJ+23DLT7UNjeC6ByuMJTMavlwq75YCkoZKFPKS38HA==
 
-everscale-standalone-client@^2.0.18:
-  version "2.0.18"
-  resolved "https://registry.yarnpkg.com/everscale-standalone-client/-/everscale-standalone-client-2.0.18.tgz#70671c6a52e2a6a7e1449f764bc6ed243f0d2ba2"
-  integrity sha512-DIz9T279zcZlyoFMKUvWR8Mx3kroIsetd5hxSFoek+1OGzbyIgU3TQ/NwH0FxeYLplAStEQGlJNiwh4zqlZD7g==
+everscale-standalone-client@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/everscale-standalone-client/-/everscale-standalone-client-1.0.4.tgz#4ffa709deb1bc08470c27b43cb0f2d633e62f128"
+  integrity sha512-vmZMXaj2OyV9Sdw0SVcjJPgMlGGWn5HNn9e4NGJdU77jTfZKHAZGbFN2MluN+lgty7T7HUHOYmVHVyotSnxtmw==
   dependencies:
     "@broxus/await-semaphore" "^0.1.5"
     events "^3.3.0"
-    everscale-inpage-provider "^0.3.28"
+    everscale-inpage-provider "^0.3.10"
     fast-safe-stringify "^2.1.1"
-    nekoton-wasm "^0.5.8"
-    node-fetch "^2.6.7"
+    nekoton-wasm "^0.1.15"
 
 evp_bytestokey@^1.0.0, evp_bytestokey@^1.0.3:
   version "1.0.3"
@@ -8125,10 +8129,10 @@ negotiator@0.6.3:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.3.tgz#58e323a72fedc0d6f9cd4d31fe49f51479590ccd"
   integrity sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==
 
-nekoton-wasm@^0.5.8:
-  version "0.5.8"
-  resolved "https://registry.yarnpkg.com/nekoton-wasm/-/nekoton-wasm-0.5.8.tgz#8acc8cfae5b0e42588271144c665ad973ddd0b7a"
-  integrity sha512-IRdvWlRFkdSCyCPuZJvufS3zBr4YZGvwB/lczsO2H833w1OJ/Ry9KC3Swl9cfJKynwaGD3HSElyY7zN0gciiMQ==
+nekoton-wasm@^0.1.15:
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/nekoton-wasm/-/nekoton-wasm-0.1.16.tgz#2c47f419d05c9a1cf39c8385a492ec37acbf2689"
+  integrity sha512-hvvFRVfmljXxnu+wDajGZppA8f1ofentbkAMZC/2rn36X9Be/8NvP05AlRK+GH5BaviJw1DG+FyLSpQ2APaBMQ==
 
 nice-try@^1.0.4:
   version "1.0.5"

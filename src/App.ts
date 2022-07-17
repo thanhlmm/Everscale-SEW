@@ -1,65 +1,119 @@
-import {Address, ProviderRpcClient, Subscription,} from 'everscale-inpage-provider'
-import * as bootstrap from 'bootstrap'
+import {
+    Address,
+    Contract,
+} from 'everscale-inpage-provider'
 // @ts-ignore
 import detectEthereumProvider from '@metamask/detect-provider'
-//import {EverscaleStandaloneClient} from 'everscale-standalone-client'
-// import {BigNumber} from 'bignumber.js'
-
-import abi from '../build/Game.abi'
-import addr from '../build/Game.addr'
+import { BigNumber } from 'bignumber.js'
+import { randomBytes } from 'crypto'
+import GameABI from '../build/Game.abi'
+import GameAddress from '../build/Game.addr'
 import {
     behavior,
     action,
     innerText,
 } from './browser'
 import {
+    detectProvider,
     ProviderList, selectedConnection
 } from './blockchain'
+import {loginModalHide} from './ui'
+import {Bet, ListBet} from './GameContract'
+import {betListRender} from './ui/betList'
+import {userRender} from './ui/user'
 
-const provider: ProviderList = {
+let provider: ProviderList = {
     ethereum: null,
     everscale: null,
 }
 
+let GameContract: Contract<typeof GameABI>
+
 async function bet(nameOption: string): Promise<void> {
-    const contract = await Contract()
+    const contract = await gameContract()
     const selected = await selectedConnection('everscale', provider)
     const selectedAddress = new Address(selected.address)
     await contract.methods.bet({
-        betHash: await createHash('42', nameOption),
-        amount: '1000000000'
+        betHash: await createHash(nameOption),
+        amount: '14000000000'
     }).send({
         from: selectedAddress,
-        amount: '2000000000',
+        amount: '15000000000',
         bounce: true,
     })
 }
 
-async function createHash(notice: string, nameOption: string): Promise<string> {
-    const contract = await Contract()
-    const out = await contract.methods.createHash({
+async function beat(betId: string, chose: string): Promise<void> {
+    const contract = await gameContract()
+    const selected = await selectedConnection('everscale', provider)
+    const selectedAddress = new Address(selected.address)
+    await contract.methods.beat({
+        betId,
+        chose,
+    }).send({
+        from: selectedAddress,
+        amount: '15000000000',
+        bounce: true,
+    })
+}
+
+async function redeem(betId: string, hash: string): Promise<void> {
+    const contract = await gameContract()
+    const selected = await selectedConnection('everscale', provider)
+    const selectedAddress = new Address(selected.address)
+    const data = getDataVault<CreateHashParam>(hash)
+    await contract.methods.redeem({
+        betId: betId,
+        notice: data.notice,
+        betChose: data.nameOption,
+    }).send({
+        from: selectedAddress,
+        amount: '1000000000',
+        bounce: true,
+    })
+}
+
+export function setDataVault(key: string, value: any): void {
+    localStorage.setItem(key, JSON.stringify(value))
+}
+
+export function getDataVault<T>(key: string): T | null {
+    const item = localStorage.getItem(key)
+    if (item) {
+        return JSON.parse(localStorage.getItem(key)) as T
+    }
+    return null
+}
+
+export interface CreateHashParam {
+    notice: string
+    nameOption: string
+}
+
+async function createHash(nameOption: string): Promise<string> {
+    const notice = `0x${randomBytes(32).toString('hex')}`
+    const contract = await gameContract()
+    const param = {
         notice,
         nameOption
-    }).call()
+    }
+    console.trace('createHash', param)
+    const out = await contract.methods.createHash(param).call()
+    setDataVault(out.hash, param);
     return out.hash
 }
 
-interface Bet {
-    id: string
-    amount: string
-    hash: string
-    beat: unknown | null
-    user: Address
-}
-
-async function listBet(): Promise<Map<string, Bet>> {
-    const contract = await Contract()
+async function listBet(): Promise<ListBet> {
+    const contract = await gameContract()
     const out = await contract.methods.listBet({}).call()
     const list = new Map<string, Bet>()
     out.listBet.forEach((it) => {
         list.set(it[0], {
             id: it[0],
-            ...it[1]
+            amount: new BigNumber(it[1].amount).shiftedBy(-9).toNumber(),
+            user: it[1].user,
+            hash: it[1].hash,
+            beat: it[1].beat,
         })
     })
     return list
@@ -74,12 +128,14 @@ const actionList = {
     betS: async () => await bet('S'),
     betE: async () => await bet('E'),
     betW: async () => await bet('W'),
-}
-
-function loginModalHide() {
-    const loginModal = document.getElementById('loginModal')
-    const modal = bootstrap.Modal.getInstance(loginModal)
-    modal.hide()
+    beat: async (param) => {
+        console.log('beat', param)
+        await beat(param.id, param.chose)
+    },
+    redeem: async (param) => {
+        console.log('redeem', param)
+        await redeem(param.id, param.hash)
+    },
 }
 
 async function connectMetaMask() {
@@ -129,8 +185,7 @@ async function checkConnect() {
     } else {
         switchScreen('main')
         const account = permissions.accountInteraction
-        behavior('everAddress', innerText(account.address.toString()))
-        behavior('everPublicKey', innerText(account.publicKey.toString()))
+        userRender(account.address.toString())
         behavior('disconnectAction', elem => elem.onclick = disconnectAction)
     }
 }
@@ -142,16 +197,23 @@ async function setNetworkChanged(network: string) {
 }
 
 function contractAddress(network: string, name = 'Game'): Address | null {
-    if (addr[network] && addr[network][name]) {
-        return new Address(addr[network][name])
+    if (GameAddress[network] && GameAddress[network][name]) {
+        return new Address(GameAddress[network][name])
     }
     return null
 }
 
-async function Contract() {
+async function gameContract(): Promise<Contract<typeof GameABI>> {
+    if (GameContract) {
+        return GameContract
+    }
     const providerState = await provider.everscale.getProviderState()
     const address = contractAddress(providerState.selectedConnection)
-    return new provider.everscale.Contract(abi, address)
+    GameContract = new provider.everscale.Contract(GameABI, address)
+    GameContract.waitForEvent().then(value => {
+        console.log(value)
+    })
+    return GameContract
 }
 
 function switchScreen(to: string) {
@@ -208,35 +270,28 @@ async function mainFlow() {
     await subscribe()
 }
 
-async function detectProvider() {
-    const ethereum = await detectEthereumProvider()
-    if (provider) {
-        provider.ethereum = ethereum
-    } else {
-        console.log('Please install MetaMask!')
-    }
-    const ever = new ProviderRpcClient({
-        // fallback: () => EverscaleStandaloneClient.create({
-        //     connection: 'mainnet',
-        // }),
-    })
-    if ((await ever.hasProvider())) {
-        try {
-            await ever.ensureInitialized()
-            provider.everscale = ever
-        } catch (error) {
-            throw error // TODO handle it
-        }
-    } else {
-        console.log('Please install Ever Wallet!')
-    }
-}
-
 async function App() {
-    action(actionList)
-    await detectProvider()
+    provider = await detectProvider()
     console.log(provider)
     await mainFlow()
+    await betListRender(await listBet())
+    action(actionList)
 }
+
+// class NApp {
+//     constructor(readonly provider: ProviderList) {
+//     }
+//
+//     async run() {
+//         const app = new NApp(await detectProvider())
+//         return app.mainFlow()
+//     }
+//
+//     async mainFlow() {
+//         const providerState = await provider.everscale.getProviderState()
+//         await setNetworkChanged(providerState.selectedConnection)
+//         await subscribe()
+//     }
+// }
 
 App().catch((error) => console.error(error))
