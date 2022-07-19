@@ -59,10 +59,10 @@ async function bet(nameOption: string): Promise<void> {
     const selectedAddress = new Address(selected.address)
     await contract.methods.bet({
         betHash: await createHash(nameOption),
-        amount: '14000000000'
+        amount: '100000000000'
     }).send({
         from: selectedAddress,
-        amount: '15000000000',
+        amount: '101000000000',
         bounce: true,
     })
 }
