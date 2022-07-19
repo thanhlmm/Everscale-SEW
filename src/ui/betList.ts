@@ -28,6 +28,16 @@ export function beatRender(value: Bet) {
 </div>`
 }
 
+export function actionRender(currentUser: string, value: Bet) {
+    const isOwner = value.user.toString() == currentUser
+    if (value.beat && isOwner) {
+        return redeemRender(value)
+    } else if (!value.beat) {
+        return beatRender(value)
+    }
+    return '<div class="alert alert-warning" role="alert">waiting</div>'
+}
+
 export function redeemRender(value: Bet) {
     return `<div class="btn-group" role="group">
     <button 
@@ -38,8 +48,7 @@ export function redeemRender(value: Bet) {
 </div>`
 }
 
-export function betListRender(list: ListBet) {
-    console.log(list)
+export async function betListRender(currentUser: string, list: ListBet) {
     let out = ''
     list.forEach((value, key) => {
         out += `<div class="card" style="width: 18rem;">
@@ -52,8 +61,8 @@ export function betListRender(list: ListBet) {
                             <div class="p-2">${value.beat ? avatarsRender(value.beat.user.toString()): '<h1>?</h1>'}</div>
                         </div>
                     </div>
+                    ${actionRender(currentUser, value)}
                 </div>
-                <div class="card-body">${value.beat ? redeemRender(value): beatRender(value)}</div>
             </div>`
     })
     behavior('betList',elem => elem.innerHTML = out)

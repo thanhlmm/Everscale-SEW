@@ -46,6 +46,10 @@ function random(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1) + max)
 }
 
+export async function currentUser(): Promise<string> {
+    return (await selectedConnection('everscale', provider)).address
+}
+
 function nameOptionListRandom(): string {
     return nameOptionList[random(0, 2)]
 }
@@ -276,7 +280,7 @@ async function mainFlow() {
 }
 
 async function refresh() {
-    await betListRender(await listBet())
+    await betListRender(await currentUser(), await listBet())
     action(actionList)
 }
 
