@@ -9,7 +9,6 @@ export function avatarsRender(user: string, algorithm = 'pixel-art') {
 }
 
 import * as bootstrap from 'bootstrap'
-import {ConnectionData, NETWORK_PRESETS} from "everscale-standalone-client/dist/connectionController";
 
 export function loginModalHide() {
     const loginModal = document.getElementById('loginModal')

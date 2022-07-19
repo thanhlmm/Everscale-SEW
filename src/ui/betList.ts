@@ -20,6 +20,11 @@ export function beatRender(value: Bet) {
         data-name="beat"
         data-param='{"id":"${value.id}", "chose": "W"}'
         type="button" class="btn btn-secondary">W</button>
+    <button
+        data-behavior="action"
+        data-name="beat"
+        data-param='{"id":"${value.id}", "chose": "R"}'
+        type="button" class="btn btn-secondary">R</button>
 </div>`
 }
 

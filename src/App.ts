@@ -40,7 +40,20 @@ let provider: ProviderList = {
 
 let GameContract: Contract<typeof GameABI>
 
+const nameOptionList = ['S', 'E', 'W']
+
+function random(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1) + max)
+}
+
+function nameOptionListRandom(): string {
+    return nameOptionList[random(0, 2)]
+}
+
 async function bet(nameOption: string): Promise<void> {
+    if (nameOption == 'R') {
+        nameOption = nameOptionListRandom()
+    }
     const contract = await gameContract()
     const selected = await selectedConnection('everscale', provider)
     const selectedAddress = new Address(selected.address)
@@ -55,6 +68,9 @@ async function bet(nameOption: string): Promise<void> {
 }
 
 async function beat(betId: string, chose: string): Promise<void> {
+    if (chose == 'R') {
+        chose = nameOptionListRandom()
+    }
     const contract = await gameContract()
     const selected = await selectedConnection('everscale', provider)
     const selectedAddress = new Address(selected.address)
@@ -113,7 +129,7 @@ async function listBet(): Promise<ListBet> {
     const contract = await gameContract()
     const out = await contract.methods.listBet({}).call()
     const list = new Map<string, Bet>()
-    out.listBet.forEach((it) => {
+    out.listBet.slice(0, 10).forEach((it) => {
         list.set(it[0], {
             id: it[0],
             amount: new BigNumber(it[1].amount).shiftedBy(-9).toNumber(),
