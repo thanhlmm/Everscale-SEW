@@ -38,8 +38,8 @@ export async function selectedConnectionList(
     state["everscale"] = {
       chainName: "everscale",
       network: providerState.selectedConnection,
-      address: accountInteraction.address.toString(),
-      publicKey: accountInteraction.publicKey,
+      address: accountInteraction?.address.toString(),
+      publicKey: accountInteraction?.publicKey,
     };
   }
   return state;
@@ -92,11 +92,11 @@ export async function detectProvider(): Promise<ProviderList> {
   const ever = new ProviderRpcClient({
     fallback: () =>
       EverscaleStandaloneClient.create({
-        connection: "local",
-        initInput: 'http://localhost:1234/nekoton_wasm_bg.wasm'
-        // "../node_modules/nekoton-wasm/nekoton_wasm_bg.wasm"
-        // initInput: import("nekoton-wasm/nekoton_wasm_bg.wasm"),
-        // initInput: "../node_modules/nekoton-wasm/nekoton_wasm_bg.wasm",
+        connection: "testnet",
+        // initInput: 'http://localhost:1234/nekoton_wasm_bg.wasm'
+        // // "../node_modules/nekoton-wasm/nekoton_wasm_bg.wasm"
+        // // initInput: import("nekoton-wasm/nekoton_wasm_bg.wasm"),
+        // // initInput: "../node_modules/nekoton-wasm/nekoton_wasm_bg.wasm",
       }),
   });
   if (await ever.hasProvider()) {
