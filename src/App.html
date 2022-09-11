@@ -1,57 +1,45 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" sizes="48x48" href="../asset/logo.png">
     <title>Cryptographic game SEW (Slashing, EVER, Whitepaper)</title>
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
 </head>
+
 <body>
     <div class="px-4 py-5 my-5 text-center">
         <img class="d-block mx-auto mb-4" src="../asset/logo.svg" alt="everscale" height="100">
         <div class="col-lg-6 mx-auto">Cryptographic game SEW (Slashing, EVER, Whitepaper)</div>
-        <div class="col-lg-6 mx-auto"><p class="lead mb-4" data-behavior="network"></p></div>
+        <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4" data-behavior="network"></p>
+        </div>
         <div data-behavior="betList" class="m-5 d-flex flex-wrap gap-2 d-sm-flex justify-content-sm-center">
         </div>
         <div class="col-lg-6 mx-auto" data-behavior="login" style="display: none">
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <button type="button"
-                        class="btn btn-primary"
-                        data-behavior="connect"
-                        data-bs-toggle="modal"
-                        data-bs-target="#loginModal">Login</button>
+                <button type="button" class="btn btn-primary" data-behavior="connect" data-bs-toggle="modal"
+                    data-bs-target="#loginModal">Login</button>
             </div>
         </div>
         <div class="col-lg-6 mx-auto" data-behavior="main" style="display: none">
-            <div data-behavior="user"
-                 style="width: 10rem;"
-                 class="card"></div>
+            <div data-behavior="user" style="width: 10rem;" class="card"></div>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
                 <div class="btn-group" role="group">
                     <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">BET 100Ė</button>
-                      </div>
-                    <button data-behavior="action"
-                            data-name="bet"
-                            data-param='{"chose":"S"}'
-                            class="btn btn-secondary"
-                            type="button">S</button>
-                    <button data-behavior="action"
-                            data-name="bet"
-                            data-param='{"chose":"E"}'
-                            class="btn btn-secondary"
-                            type="button">E</button>
-                    <button data-behavior="action"
-                            data-name="bet"
-                            data-param='{"chose":"W"}'
-                            class="btn btn-secondary"
-                            type="button">W</button>
-                    <button data-behavior="action"
-                            data-name="bet"
-                            data-param='{"chose":"R"}'
-                            class="btn btn-secondary"
-                            type="button">R</button>
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">BET 100Ė</button>
+                    </div>
+                    <button data-behavior="action" data-name="bet" data-param='{"chose":"S"}' class="btn btn-secondary"
+                        type="button">S</button>
+                    <button data-behavior="action" data-name="bet" data-param='{"chose":"E"}' class="btn btn-secondary"
+                        type="button">E</button>
+                    <button data-behavior="action" data-name="bet" data-param='{"chose":"W"}' class="btn btn-secondary"
+                        type="button">W</button>
+                    <button data-behavior="action" data-name="bet" data-param='{"chose":"R"}' class="btn btn-secondary"
+                        type="button">R</button>
                 </div>
 
             </div>
@@ -62,16 +50,15 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body mx-auto" style="width: 345px;">
-                    <button type="button"
-                            class="btn btn-primary btn-lg px-4 gap-3"
-                            data-behavior="connectEverWallet">Ever Wallet</button>
-                    <button type="button"
-                            class="btn btn-primary btn-lg px-4 gap-3"
-                            data-behavior="connectMetaMask">MetaMask</button>
+                    <button type="button" class="btn btn-primary btn-lg px-4 gap-3"
+                        data-behavior="connectEverWallet">Ever Wallet</button>
+                    <button type="button" class="btn btn-primary btn-lg px-4 gap-3"
+                        data-behavior="connectMetaMask">MetaMask</button>
                 </div>
             </div>
         </div>
     </div>
-    <script src="App.ts"></script>
+    <script type="module" src="App.ts"></script>
 </body>
+
 </html>
