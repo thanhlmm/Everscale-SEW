@@ -89,7 +89,7 @@ export async function detectProvider(): Promise<ProviderList> {
     }
     const ever = new ProviderRpcClient({
         fallback: () => EverscaleStandaloneClient.create({
-            connection: 'testnet',
+            connection: 'testnet', // Notice: Change to correct env when we go mainet
         }),
     })
     if ((await ever.hasProvider())) {
