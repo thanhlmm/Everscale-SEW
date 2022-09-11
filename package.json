@@ -49,9 +49,11 @@
     "node": ">=16"
   },
   "devDependencies": {
+    "@babel/core": "^7.19.0",
     "@broxus/contracts": "^1.0.4",
     "@metamask/detect-provider": "^1.2.0",
     "@popperjs/core": "^2.11.5",
+    "babel-plugin-transform-import-meta": "^2.2.0",
     "bignumber.js": "^9.0.2",
     "bootstrap": "^5.1.3",
     "chai": "^4.3.6",
@@ -59,14 +61,17 @@
     "crypto": "^1.0.1",
     "deep-equal-in-any-order": "^2.0.0",
     "everdev": "^1.2.1",
-    "everscale-inpage-provider": "^0.3.28",
-    "everscale-standalone-client": "1.0.4",
+    "everscale-inpage-provider": "^0.3.41",
+    "everscale-standalone-client": "^2.1.1",
     "gh-pages": "^4.0.0",
     "ipfs-deploy": "^11.2.2",
     "locklift": "EverscaleGuild/locklift",
-    "parcel": "^2.6.2",
+    "parcel": "^2.7.0",
     "parcel-bundler": "^1.12.5",
     "serve": "^14.0.1",
     "typescript": "^4.7.4"
+  },
+  "browser": {
+    "crypto": false
   }
 }
